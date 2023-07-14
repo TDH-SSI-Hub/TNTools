@@ -207,7 +207,7 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
 #'
 #' @return T/F
 #' @export
-email_send <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc = c(), visible = F, check_ooo = F, send = T, signature=T, appname='outApp') {
+email_send <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc = c(), visible = F, check_ooo = F, send = T, signature=T) {
   email_draft(to=to,
               subject=subject,
               body=body,
@@ -218,8 +218,7 @@ email_send <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc
               visible = visible,
               check_ooo=check_ooo,
               send = send,
-              signature=signature,
-              appname=appname
+              signature=signature
               )
 }
 
