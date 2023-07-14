@@ -73,9 +73,9 @@ if('devtools' %in% rownames(installed.packages())){
 #' @param cc Email cc
 #' @param bcc Email bcc
 #' @param visible Open the email in the viewer
-#' @param check_ooo Check for and remove recipients who are out of office the entire day
+#' @param check_ooo Check for and remove recipients who are out of office the entire day. If there are no more main recipients, the email is not sent. Requires open Outlook application.
 #' @param send Send the email
-#' @param signature Attach signature to end of email
+#' @param signature Attach signature to end of email. Requires open Outlook application.
 #'
 #' @return T/F
 #' @export
@@ -200,10 +200,10 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
 #' @param cc Email cc
 #' @param bcc Email bcc
 #' @param visible Open the email in the viewer
-#' @param check_ooo Check for and remove recipients who are out of office the entire day
+#' @param check_ooo Check for and remove recipients who are out of office the entire day.
+#'  If there are no more main recipients, the email is not sent. Requires open Outlook application.
 #' @param send Send the email
-#' @param signature Attach signature to end of email
-#' @param appname Name of the Outlook object in R. If this object already exists, it is used. If it does not exist, it is created in the global environment.
+#' @param signature Attach signature to end of email. Requires open Outlook application.
 #'
 #' @return T/F
 #' @export
