@@ -30,8 +30,8 @@ use_data(tn_logo_name_list, overwrite = T)
 
 
 # Shapefiles
-load('J:\\SSI\\_Greg\\TNTools\\data-raw\\Shapefiles\\county_shapefiles.rdata')
-use_data(tn_county_shapefiles, overwrite = T)
+#load('J:\\SSI\\_Greg\\TNTools\\data-raw\\Shapefiles\\county_shapefiles.rdata')
+#use_data(tn_county_shapefiles, overwrite = T)
 
 
 # On load (put elsewhere)

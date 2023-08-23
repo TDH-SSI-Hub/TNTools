@@ -5,7 +5,7 @@
 \alias{tn_logo_name_list}
 \title{Names associated with TN logos}
 \format{
-An object of class \code{character} of length 30.
+An object of class \code{character} of length 3.
 }
 \usage{
 tn_logo_name_list
