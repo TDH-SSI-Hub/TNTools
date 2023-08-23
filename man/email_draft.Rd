@@ -5,9 +5,9 @@
 \title{Draft and possibly send an Outlook email.}
 \usage{
 email_draft(
-  to,
-  subject,
-  body,
+  to = "",
+  subject = "",
+  body = "",
   from = NA,
   attach = c(),
   cc = c(),

@@ -105,7 +105,7 @@ tn_logo_fetch <- function(name) {
 #'
 #' @param plot ggplot object to add on to
 #' @param logo Name of logo from tn_logo_names
-#' @param size Vertical size of logo in relation to entire plot. size=.1 means the logo will take up 10% of the vertical space
+#' @param size Vertical size of logo in relation to entire plot. size=.1 means the logo will take up a tenth of the vertical space
 #' @param position String specifying top/bottom and left/center/right position of logo
 #' @param margin Space around entire output in mm
 #' @param vjust Vertical justification 0-1. 0 places the logo entirely inside the plot. 1 places the logo entirely outside.

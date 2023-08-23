@@ -18,7 +18,7 @@ add_tn_logo(
 
 \item{logo}{Name of logo from tn_logo_names}
 
-\item{size}{Vertical size of logo in relation to entire plot. size=.1 means the logo will take up 10% of the vertical space}
+\item{size}{Vertical size of logo in relation to entire plot. size=.1 means the logo will take up a tenth of the vertical space}
 
 \item{position}{String specifying top/bottom and left/center/right position of logo}
 
