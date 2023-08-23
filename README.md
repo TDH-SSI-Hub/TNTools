@@ -1,8 +1,6 @@
 TNTools
 ================
 
-    Warning: package 'ggplot2' was built under R version 4.2.3
-
 # Overview
 
 This package is a collection of convenience functions and data for TN
@@ -125,15 +123,6 @@ ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length)) +
            axis_text_color = 'OfficialRed')
 ```
 
-    Warning: Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-    Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-    Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-    Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-
 ![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Official hex colors can be found using `tn_color_names()` or
@@ -162,22 +151,11 @@ These palettes can be used with another set of custom functions:
 `scale_fill_tn()` and `scale_color_tn()`
 
 ``` r
-#| warnings: false
-
 ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
   geom_point() +
   scale_color_tn('Contrast') +
   theme_tn(axis_line_color = 'OfficialBlue',
            axis_text_color = 'OfficialRed')
 ```
-
-    Warning: Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-    Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-    Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
-    Vectorized input to `element_text()` is not officially supported.
-    ℹ Results may be unexpected or may change in future versions of ggplot2.
 
 ![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-9-1.png)
