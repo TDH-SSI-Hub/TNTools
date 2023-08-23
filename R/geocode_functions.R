@@ -48,7 +48,7 @@ geocode_address<-function(df,
     )
 
     # Parse the JSON response
-    res_df<-tidyr::unnest(as.data.frame(fromJSON(rawToChar(response$content))),everything())
+    res_df<-tidyr::unnest(as.data.frame(jsonlite::fromJSON(rawToChar(response$content))),tidyr::everything())
 
     geocode_response[[length(geocode_response)+1]] <- res_df
 

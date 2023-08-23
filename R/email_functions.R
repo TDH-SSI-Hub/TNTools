@@ -10,18 +10,18 @@
 
 email_setup<-function(force=F, repo='bschamberger'){
   unloadNamespace("RDCOMClient")
-  if(force) remove.packages("RDCOMClient")
+  if(force) utils::remove.packages("RDCOMClient")
 
-  if('RDCOMClient' %in% rownames(installed.packages())){
+  if('RDCOMClient' %in% rownames(utils::installed.packages())){
     message('RDCOMClient already installed.\nIf you have problems sending emails, uninstall RDCOMClient and try again.')
   return(T)
     }
 
-if('devtools' %in% rownames(installed.packages())){
+if('devtools' %in% rownames(utils::installed.packages())){
   message('devtools package already installed')
 }else{
   message('installing devtools package')
-  install.packages('devtools')
+  utils::install.packages('devtools')
 }
 
 
@@ -79,7 +79,7 @@ if('devtools' %in% rownames(installed.packages())){
 #'
 #' @return T/F
 #' @export
-email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc = c(), visible = T, check_ooo = F, send = F, signature=T) {
+email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc = c(), bcc = c(), visible = T, check_ooo = F, send = F, signature=T) {
   if(require('RDCOMClient')){
 
     check_error<-tryCatch(getCOMInstance('Outlook.Application', force=F), error=function(e){
@@ -92,7 +92,7 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
       signature <- F
     }
     if(!exists('outApp')){
-      outApp <<- RDCOMClient::COMCreate("Outlook.Application", existing = F)
+      assign('outApp',RDCOMClient::COMCreate("Outlook.Application", existing = F))
     }
 
     if (visible) {
@@ -106,14 +106,15 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
       outMail[["sentonbehalfofname"]] <- from
     }
 
+    if (visible) {outMail$Display()}
 
     if(signature){
       inspector<-outMail$GetInspector()
       signaturetext <- outMail[["HTMLBody"]]
-      inspector$Close(1)
+      #inspector$Close(1)
     }
 
-    if (visible) {outMail$Display()}
+
 
     for (r in c("to", "cc", "bcc")) {
       if (length(get(r)) > 0) {
@@ -125,7 +126,7 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
       remove_list <- c()
       for (i in seq_len(outMail[["recipients"]]$Count())) {
         tryCatch({
-          time_string <- outMail[["recipients"]]$item(i)[["AddressEntry"]]$GetFreeBusy(as.character(Sys.Date()), 60, T) %>% substr(1, 24)
+          time_string <- substr(outMail[["recipients"]]$item(i)[["AddressEntry"]]$GetFreeBusy(as.character(Sys.Date()), 60, T) , 1, 24)
           if (time_string == paste0(rep(3, 24), collapse = "")) {
             message(paste0(outMail[["recipients"]]$item(i)[["Name"]], " is OOO"))
             remove_list <- c(remove_list, i)
@@ -145,18 +146,6 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
     outMail[["subject"]] <- subject
 
 
-    if (grepl("<br>",body)) {
-      outMail[["HTMLBody"]] <- body
-    } else {
-      outMail[["body"]] <- body
-    }
-
-
-    if(signature){
-      outMail[["HTMLBody"]] <- paste0(outMail[["HTMLBody"]],signaturetext)
-    }
-
-
     if (length(attach) > 0) {
       for (i in attach) {
         if (!grepl(getwd(), i)) i <- paste0(getwd(), "/", i)
@@ -168,6 +157,24 @@ email_draft <- function(to, subject, body, from = NA, attach = c(), cc = c(), bc
         )
       }
     }
+
+    if (grepl("<br>",body)) {
+      outMail[["HTMLBody"]] <- body
+    } else {
+      outMail[["body"]] <- body
+    }
+
+
+    if(signature ){
+      if(!is.null(signaturetext)){
+      outMail[["HTMLBody"]] <- paste0(outMail[["HTMLBody"]],signaturetext)
+      }else{
+        message("Error generating signature")
+      }
+    }
+
+
+
 
 
     if (send) {

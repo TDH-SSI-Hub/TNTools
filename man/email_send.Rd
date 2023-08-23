@@ -15,8 +15,7 @@ email_send(
   visible = F,
   check_ooo = F,
   send = T,
-  signature = T,
-  appname = "outApp"
+  signature = T
 )
 }
 \arguments{
@@ -36,13 +35,12 @@ email_send(
 
 \item{visible}{Open the email in the viewer}
 
-\item{check_ooo}{Check for and remove recipients who are out of office the entire day}
+\item{check_ooo}{Check for and remove recipients who are out of office the entire day.
+If there are no more main recipients, the email is not sent. Requires open Outlook application.}
 
 \item{send}{Send the email}
 
-\item{signature}{Attach signature to end of email}
-
-\item{appname}{Name of the Outlook object in R. If this object already exists, it is used. If it does not exist, it is created in the global environment.}
+\item{signature}{Attach signature to end of email. Requires open Outlook application.}
 }
 \value{
 T/F

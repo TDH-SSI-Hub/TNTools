@@ -1,27 +1,29 @@
 
 
-#' Emails associated with CEDEP program areas
-#'
-#' A dataset containing various program areas and emails associated with them.
-#'  The variables are as follows:
-#'
-#' @docType data
-#'
-#' @format A data frame with 10 rows and 2 variables:
-#' \describe{
-#'   \item{Program}{CEDEP program area}
-#'   \item{Email}{Emails to reach the program area}
-#' }
-#'
-#'
-"program_emails"
-
-
 #' Shapefiles for each county in TN
 #'
 #' Shapefiles and associated data for counties in TN
 #'
-#' @docType shapefile
+#' @docType data
 #'
-#' @export
-"county_shapefiles"
+"tn_county_shapefiles"
+
+#' Branding colors for TN
+#'
+#' Hex values, palette, family, and name info for branding approved colors
+#'
+#' @docType data
+#'
+"tn_colors"
+
+#' Color palettes for TN
+#'
+#' @docType data
+#'
+"tn_palettes"
+
+#' Names associated with TN logos
+#'
+#' @docType data
+#'
+"tn_logo_name_list"
