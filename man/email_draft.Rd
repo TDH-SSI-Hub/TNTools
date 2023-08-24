@@ -15,7 +15,7 @@ email_draft(
   visible = T,
   check_ooo = F,
   send = F,
-  signature = T
+  signature = F
 )
 }
 \arguments{

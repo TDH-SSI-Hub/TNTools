@@ -79,7 +79,7 @@ if('devtools' %in% rownames(utils::installed.packages())){
 #'
 #' @return T/F
 #' @export
-email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc = c(), bcc = c(), visible = T, check_ooo = F, send = F, signature=T) {
+email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc = c(), bcc = c(), visible = T, check_ooo = F, send = F, signature=F) {
   if(require('RDCOMClient')){
 
     check_error<-tryCatch(getCOMInstance('Outlook.Application', force=F), error=function(e){
@@ -92,14 +92,14 @@ email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc 
       signature <- F
     }
     if(!exists('outApp')){
-      assign('outApp',RDCOMClient::COMCreate("Outlook.Application", existing = F))
+      outApp<<-RDCOMClient::COMCreate("Outlook.Application", existing = F)
     }
 
-    if (visible) {
+    #if (visible) {
       outMail <<- outApp$CreateItem(0)
-    }else{
-      outMail <- outApp$CreateItem(0)
-    }
+    #}else{
+    #  outMail <<- outApp$CreateItem(0)
+    #}
 
     # Send the message from an alternate account
     if (!is.na(from)) {
@@ -113,8 +113,6 @@ email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc 
       signaturetext <- outMail[["HTMLBody"]]
       #inspector$Close(1)
     }
-
-
 
     for (r in c("to", "cc", "bcc")) {
       if (length(get(r)) > 0) {
@@ -185,6 +183,7 @@ email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc 
         return(F)
       }
 
+
       return(outMail$Send())
     }else{
       return(NA)
@@ -214,7 +213,7 @@ email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc 
 #'
 #' @return T/F
 #' @export
-email_send <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc = c(), visible = F, check_ooo = F, send = T, signature=T) {
+email_send <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc = c(), visible = F, check_ooo = F, send = T, signature=F) {
   email_draft(to=to,
               subject=subject,
               body=body,
@@ -228,4 +227,7 @@ email_send <- function(to, subject, body, from = NA, attach = c(), cc = c(), bcc
               signature=signature
               )
 }
+
+
+
 
