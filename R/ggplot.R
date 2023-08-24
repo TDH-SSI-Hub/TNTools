@@ -120,13 +120,13 @@ add_tn_logo<-function(plot,logo,size=.1,position = 'bottom left', margin = 1, vj
     if(tolower(logo) %in% tolower(tn_logo_names())){
       logo<-tn_logo_fetch(logo)
     }else{
-    logo <- image_magick::image_read(logo)
+    logo <- magick::image_read(logo)
     }
   }else {
     stop('Invalid logo. Must be an image object, file path, or one of tn_logo_names()')
   }
 
-lfi<-image_magick::image_info(logo)
+lfi<-magick::image_info(logo)
 ar<-lfi$height/lfi$width
 
 top<-F

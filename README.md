@@ -7,11 +7,11 @@ This package is a collection of convenience functions and data for TN
 Department of Health users. There are several areas addressed, and more
 may be added periodically:
 
--   Email: Helper functions for installing RDCOMClient and
-    drafting/sending emails using Outlook
--   Geocoding: Functions which interface with the TN Geocoding API
-    (needs work), as well as TN shapefiles
--   ggplot2: Themes, color palettes, and TN logos
+- Email: Helper functions for installing RDCOMClient and
+  drafting/sending emails using Outlook
+- Geocoding: Functions which interface with the TN Geocoding API (needs
+  work), as well as TN shapefiles
+- ggplot2: Themes, color palettes, and TN logos
 
 ### Download this package
 
@@ -105,10 +105,11 @@ to Open Sans and simplifies the default theme.
 ``` r
 ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length)) +
   geom_point() +
-  theme_tn()
+  theme_tn() +
+  ggtitle('Flowers')
 ```
 
-![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](README_files/figure-commonmark/theme_basic-1.png)
 
 In addition, you can set the color for various plot elements using the
 function parameters. If a color is not branding compliant, a warning
@@ -117,13 +118,17 @@ will be generated.
 ``` r
 #| warnings: false
 
-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length)) +
+flowers<-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
   geom_point() +
+  ggtitle('Flowers') +
   theme_tn(axis_line_color = 'OfficialBlue',
-           axis_text_color = 'OfficialRed')
+           axis_text_color = 'OfficialRed',
+           title_color = 'OfficialBlue') 
+
+flowers
 ```
 
-![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-commonmark/theme_color-1.png)
 
 Official hex colors can be found using `tn_color_names()` or
 `tn_colors_show()`. This function can be filtered by palette to make it
@@ -134,7 +139,7 @@ for the colors.
 tn_color_show()
 ```
 
-![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-commonmark/color_show-1.png)
 
 ### Color Palettes
 
@@ -145,17 +150,42 @@ see them.
 tn_palette_show()
 ```
 
-![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](README_files/figure-commonmark/palette_show-1.png)
 
 These palettes can be used with another set of custom functions:
 `scale_fill_tn()` and `scale_color_tn()`
 
 ``` r
-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
-  geom_point() +
-  scale_color_tn('Contrast') +
-  theme_tn(axis_line_color = 'OfficialBlue',
-           axis_text_color = 'OfficialRed')
+flowers +
+  scale_color_tn('Contrast')
 ```
 
-![](README.markdown_github_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-commonmark/scales-1.png)
+
+For continuous scales, use `discrete=FALSE`. This will result in colors
+on the plot which do not conform to the branding standard because
+intermediate colors are interpolated from the chosen palette.
+
+Finally, the `add_tn_logo()` function can place one of several onto a
+plot object. The logo can be specified as a string from
+`tn_logo_names()` and the position can be on the top or bottom of the
+plot, in the left, right, or center (using the `position` parameter).
+
+``` r
+add_tn_logo(plot = flowers
+            , logo = "TN Dept of Health Color"
+            , position = 'top right')
+```
+
+![](README_files/figure-commonmark/logos-1.png)
+
+The logo can be moved inside the plot area by setting `vjust = 0`.
+
+``` r
+add_tn_logo(plot = flowers
+            , logo = "TN Dept of Health Color"
+            , position = 'top right'
+            , vjust = 0)
+```
+
+![](README_files/figure-commonmark/logos_vjust-1.png)
