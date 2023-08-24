@@ -40,11 +40,6 @@ often not available on CRAN for recent versions of R. You likely need to
 install the package from github. I recommend the
 [bschamberger](https://github.com/bschamberger/RDCOMClient) or
 [omegahat](https://github.com/bschamberger/RDCOMClient) repositories.
-
-``` r
-email_setup()
-```
-
 `email_setup()` is designed to help install RDCOMClient.
 
 ### Sending emails
@@ -153,7 +148,10 @@ tn_palette_show()
 ![](README_files/figure-commonmark/palette_show-1.png)
 
 These palettes can be used with another set of custom functions:
-`scale_fill_tn()` and `scale_color_tn()`
+`scale_fill_tn()` and `scale_color_tn()`. When the `TNTools` package is
+loaded, the default ggplot discrete palette is changed to the ‘Default’
+TN palette. This is also the default palette for the `scale_*_tn`
+functions, but other palettes can be supplied.
 
 ``` r
 flowers <- flowers +
@@ -166,12 +164,17 @@ flowers
 
 For continuous scales, use `discrete=FALSE`. This will result in colors
 on the plot which do not conform to the branding standard because
-intermediate colors are interpolated from the chosen palette.
+intermediate colors are interpolated from the chosen palette. Unlike its
+effect on discrete scales, loading `TNTools` does not change the
+continuous scale color or fill defaults.
+
+To disable or enable the TN default scale coloring, you can use
+`tn_ggplot_color_off()` and `tn_ggplot_color_on()`.
 
 ### Logos
 
-Finally, the `add_tn_logo()` function can place one of several onto a
-plot object. The logo can be specified as a string from
+Finally, the `add_tn_logo()` function can place one of several logos
+onto a plot object. The logo can be specified as a string from
 `tn_logo_names()` and the position can be on the top or bottom of the
 plot, in the left, right, or center (using the `position` parameter).
 
