@@ -5,7 +5,7 @@
 \alias{tn_palettes}
 \title{Color palettes for TN}
 \format{
-An object of class \code{list} of length 18.
+An object of class \code{list} of length 19.
 }
 \usage{
 tn_palettes

@@ -272,7 +272,7 @@ tn_pal <- function(palette = "Primary", reverse = FALSE, ...) {
 #'            scale_color_gradientn, used respectively when discrete is TRUE or FALSE
 #' @export
 #'
-scale_color_tn <- function(palette = "Primary", discrete = TRUE, reverse = FALSE, interpolate=FALSE, ...) {
+scale_color_tn <- function(palette = "Default", discrete = TRUE, reverse = FALSE, interpolate=FALSE, ...) {
 
   if(!palette %in% names(tn_palettes)) stop(paste0('Invalid palette name. Options include: ', paste0(names(tn_palettes), collapse = ', ')))
   pal <- tn_pal(palette = palette, reverse = reverse)
@@ -305,7 +305,7 @@ scale_color_tn <- function(palette = "Primary", discrete = TRUE, reverse = FALSE
 #'            scale_fill_gradientn, used respectively when discrete is TRUE or FALSE
 #' @export
 #'
-scale_fill_tn <- function(palette = "Primary", discrete = TRUE, reverse = FALSE, interpolate=FALSE, ...) {
+scale_fill_tn <- function(palette = "Default", discrete = TRUE, reverse = FALSE, interpolate=FALSE, ...) {
 
   if(!palette %in% names(tn_palettes)) stop(paste0('Invalid palette name. Options include: ', paste0(names(tn_palettes), collapse = ', ')))
 
@@ -328,6 +328,24 @@ scale_fill_tn <- function(palette = "Primary", discrete = TRUE, reverse = FALSE,
                                   , ...
                                   )
   }
+}
+
+tn_ggplot_colors_off<-function(){
+  options(
+    ggplot2.discrete.fill= 'default'
+    ,ggplot2.discrete.colour= 'default'
+  )
+  invisible()
+}
+
+tn_ggplot_colors_on<-function(){
+  gcol<-c("#0022a1","#fc0a2d","#6a7f8c","#66ffd6","#d4ff40","#ff6108","#cdddf4","#2f470e","#4c90d3","#ed9924","#ee3524","#780000","#132742","#4f897b","#ffa799", "#c24e13","#a4ce40","#f2cd47","#ed6053" ,"#174a7c" ,"#659737" ,"#e8feb1")
+
+  options(
+    ggplot2.discrete.fill= list(gcol)
+    ,ggplot2.discrete.colour= list(gcol)
+  )
+  invisible()
 }
 
 

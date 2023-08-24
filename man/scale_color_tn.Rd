@@ -5,7 +5,7 @@
 \title{Color scale constructor for TN colors}
 \usage{
 scale_color_tn(
-  palette = "Primary",
+  palette = "Default",
   discrete = TRUE,
   reverse = FALSE,
   interpolate = FALSE,

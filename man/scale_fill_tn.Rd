@@ -5,7 +5,7 @@
 \title{Fill scale constructor for TN colors}
 \usage{
 scale_fill_tn(
-  palette = "Primary",
+  palette = "Default",
   discrete = TRUE,
   reverse = FALSE,
   interpolate = FALSE,
