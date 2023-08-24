@@ -103,10 +103,12 @@ facing reports and dashboards. The `theme_tn()` function sets plot fonts
 to Open Sans and simplifies the default theme.
 
 ``` r
-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length)) +
+flowers <- ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
   geom_point() +
-  theme_tn() +
-  ggtitle('Flowers')
+  ggtitle('Flowers') +
+  theme_tn()
+  
+flowers
 ```
 
 ![](README_files/figure-commonmark/theme_basic-1.png)
@@ -116,9 +118,7 @@ function parameters. If a color is not branding compliant, a warning
 will be generated.
 
 ``` r
-#| warnings: false
-
-flowers<-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
+flowers <- ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
   geom_point() +
   ggtitle('Flowers') +
   theme_tn(axis_line_color = 'OfficialBlue',
@@ -156,8 +156,10 @@ These palettes can be used with another set of custom functions:
 `scale_fill_tn()` and `scale_color_tn()`
 
 ``` r
-flowers +
+flowers <- flowers +
   scale_color_tn('Contrast')
+
+flowers
 ```
 
 ![](README_files/figure-commonmark/scales-1.png)
@@ -165,6 +167,8 @@ flowers +
 For continuous scales, use `discrete=FALSE`. This will result in colors
 on the plot which do not conform to the branding standard because
 intermediate colors are interpolated from the chosen palette.
+
+### Logos
 
 Finally, the `add_tn_logo()` function can place one of several onto a
 plot object. The logo can be specified as a string from
