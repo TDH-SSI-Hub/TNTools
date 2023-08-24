@@ -5,7 +5,7 @@
 \alias{tn_colors}
 \title{Branding colors for TN}
 \format{
-An object of class \code{data.frame} with 123 rows and 5 columns.
+An object of class \code{data.frame} with 120 rows and 5 columns.
 }
 \usage{
 tn_colors
