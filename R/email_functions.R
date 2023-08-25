@@ -26,14 +26,14 @@ if('devtools' %in% rownames(utils::installed.packages())){
 
 
 
-  if(pkgbuild::check_rtools()){
-    message('rtools already installed')
-  }else{
-    rt_ver<-substr(paste0(R.Version()$major,R.Version()$minor),1,2)
-    message(paste0('Need to install rtools ',rt_ver,'. Follow prompts in dialog box.'))
-    pkgbuild::check_build_tools()
-    return(F)
-  }
+  #if(pkgbuild::check_rtools()){
+  #  message('rtools already installed')
+  #}else{
+  #  rt_ver<-substr(paste0(R.Version()$major,R.Version()$minor),1,2)
+  #  message(paste0('Need to install rtools ',rt_ver,'. Follow prompts in dialog box.'))
+  #  pkgbuild::check_build_tools()
+  #  return(F)
+  #}
 
   valid_repo<-c('omegahat','bschamberger')
 
