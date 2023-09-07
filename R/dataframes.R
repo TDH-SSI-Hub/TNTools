@@ -1,4 +1,11 @@
 
+#' Dataframe of counties and their health regions
+#'
+#' Dataframe of counties and their health regions
+#'
+#' @docType data
+#'
+"tn_counties"
 
 #' Shapefiles for each county in TN
 #'

@@ -1,5 +1,4 @@
-TNTools
-================
+# TNTools
 
 # Overview
 
@@ -40,6 +39,11 @@ often not available on CRAN for recent versions of R. You likely need to
 install the package from github. I recommend the
 [bschamberger](https://github.com/bschamberger/RDCOMClient) or
 [omegahat](https://github.com/bschamberger/RDCOMClient) repositories.
+
+``` r
+email_setup()
+```
+
 `email_setup()` is designed to help install RDCOMClient.
 
 ### Sending emails
@@ -88,8 +92,69 @@ outMail$Send()
 
 The TN geocoding API should be used for geocoding whenever possible,
 since it is updated monthly. The goal for this section of TNTools is to
-make an easy interface to the geocoder. This area is under active
-development.
+make an easy interface to the geocoder. Currently, the only supported
+service is the geocode address functionality.
+
+The main function in this section is `tn_geocode_addresses()`. The first
+argument is a dataframe with columns that can be used as inputs to the
+geocoder. The `match_on` parameter specifies which columns are to be
+sent to the geocoder, and what they represent. In the example below, the
+dataframe has a street address column “locAddress”, so we specify that
+`Address="locAddress"`. We do the same for city, but the state field is
+already named correctly and doesn’t need to be named in the parameter.
+
+``` r
+tdh<-data.frame(locAddress='710 James Robertson Pwky'
+           ,locCity='Nashville'
+           ,State='TN')
+
+tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
+                                       ,City='locCity'
+                                       ,'State')
+                     )
+```
+
+                    locAddress   locCity State Score
+    1 710 James Robertson Pwky Nashville    TN 99.44
+                                          Match_addr   County         X        Y
+    1 710 JAMES ROBERTSON PKWY, NASHVILLE, TN, 37203 DAVIDSON -86.78719 36.16781
+
+The default output includes the match score, match address, county, and
+X/Y coordinates (longitude and latitude). You can specify the fields the
+return by using the `return_fields` parameter. In addition to specific
+parameters, you can use ’\*‘,’All’,’‘, or `NA` to return all fields, or
+’None’ to return the default minimum fields.
+
+``` r
+tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
+                                       ,City='locCity'
+                                       ,'State')
+                     , return_fields = c('County','Postal')
+                     )
+```
+
+                    locAddress   locCity State   County Postal
+    1 710 James Robertson Pwky Nashville    TN DAVIDSON  37203
+
+For a list of valid inputs and outputs use `tn_valid_inputs()` and
+`tn_valid_outputs()`. By default, these return the parameters accepted
+or returned by the geocoder. `tn_geocode_addresses()` can handle some
+common aliases for important fields (e.g., ‘Street’ is recognized as
+‘Address’). Running `tn_valid_inputs(special_cases=T)` or
+`tn_valid_outputs(special_cases=T)` will include additional aliases you
+can use with `tn_geocode_addresses()`. In the example below, we use
+‘Street’ as an alias for ‘Address’ and ‘Zip’ instead of ‘Postal’.
+
+``` r
+tn_geocode_addresses(tdh, match_on = c(Street='locAddress'
+                                       ,City='locCity'
+                                       ,'State')
+                     , return_fields = c('County','Zip')
+                     )
+```
+
+                    locAddress   locCity State   County   Zip
+    1 710 James Robertson Pwky Nashville    TN DAVIDSON 37203
 
 ## `ggplot2` and Branding
 
@@ -98,22 +163,22 @@ facing reports and dashboards. The `theme_tn()` function sets plot fonts
 to Open Sans and simplifies the default theme.
 
 ``` r
-flowers <- ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
   geom_point() +
   ggtitle('Flowers') +
   theme_tn()
-  
-flowers
 ```
 
-![](README_files/figure-commonmark/theme_basic-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-8-1.png)
 
 In addition, you can set the color for various plot elements using the
 function parameters. If a color is not branding compliant, a warning
 will be generated.
 
 ``` r
-flowers <- ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+#| warnings: false
+
+flowers<-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
   geom_point() +
   ggtitle('Flowers') +
   theme_tn(axis_line_color = 'OfficialBlue',
@@ -123,7 +188,7 @@ flowers <- ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species))
 flowers
 ```
 
-![](README_files/figure-commonmark/theme_color-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
 
 Official hex colors can be found using `tn_color_names()` or
 `tn_colors_show()`. This function can be filtered by palette to make it
@@ -134,7 +199,7 @@ for the colors.
 tn_color_show()
 ```
 
-![](README_files/figure-commonmark/color_show-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
 
 ### Color Palettes
 
@@ -145,54 +210,29 @@ see them.
 tn_palette_show()
 ```
 
-![](README_files/figure-commonmark/palette_show-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-11-1.png)
 
 These palettes can be used with another set of custom functions:
-`scale_fill_tn()` and `scale_color_tn()`. When the `TNTools` package is
-loaded, the default ggplot discrete palette is changed to the ‘Default’
-TN palette. This is also the default palette for the `scale_*_tn`
-functions, but other palettes can be supplied.
+`scale_fill_tn()` and `scale_color_tn()`
 
 ``` r
-flowers <- flowers +
+flowers +
   scale_color_tn('Contrast')
-
-flowers
 ```
 
-![](README_files/figure-commonmark/scales-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-12-1.png)
 
 For continuous scales, use `discrete=FALSE`. This will result in colors
 on the plot which do not conform to the branding standard because
-intermediate colors are interpolated from the chosen palette. Unlike its
-effect on discrete scales, loading `TNTools` does not change the
-continuous scale color or fill defaults.
+intermediate colors are interpolated from the chosen palette.
 
-To disable or enable the TN default scale coloring, you can use
-`tn_ggplot_color_off()` and `tn_ggplot_color_on()`.
-
-### Logos
-
-Finally, the `add_tn_logo()` function can place one of several logos
-onto a plot object. The logo can be specified as a string from
+Finally, the `add_tn_logo()` function can place one of several onto a
+plot object. The logo can be specified as a string from
 `tn_logo_names()` and the position can be on the top or bottom of the
 plot, in the left, right, or center (using the `position` parameter).
 
 ``` r
-add_tn_logo(plot = flowers
-            , logo = "TN Dept of Health Color"
-            , position = 'top right')
+add_tn_logo(flowers,"TN Dept of Health Color", position = 'top right')
 ```
 
-![](README_files/figure-commonmark/logos-1.png)
-
-The logo can be moved inside the plot area by setting `vjust = 0`.
-
-``` r
-add_tn_logo(plot = flowers
-            , logo = "TN Dept of Health Color"
-            , position = 'top right'
-            , vjust = 0)
-```
-
-![](README_files/figure-commonmark/logos_vjust-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-13-1.png)

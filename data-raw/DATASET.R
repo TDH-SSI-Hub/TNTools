@@ -1,6 +1,11 @@
 
 library(usethis)
 
+
+# county to region
+tn_counties<-read.csv("J:\\SSI\\_Greg\\TNTools\\data-raw\\regions\\county_to_region.csv")
+use_data(tn_counties, overwrite = T)
+
 # Colors
 tn_colors<-read.csv("J:\\SSI\\_Greg\\TNTools\\data-raw\\colors\\tn_colors.csv")
 use_data(tn_colors, overwrite = T)
@@ -35,7 +40,7 @@ use_data(tn_logo_name_list, overwrite = T)
 
 
 # On load (put elsewhere)
-options(
-  ggplot2.discrete.fill= list(c(tn_palettes[['Official']], tn_palettes[['Secondary']], tn_palettes[['Support1']]))
-  ,ggplot2.discrete.colour= list(c(tn_palettes[['Official']], tn_palettes[['Secondary']],tn_palettes[['Support1']]))
-)
+#options(
+#  ggplot2.discrete.fill= list(c(tn_palettes[['Official']], tn_palettes[['Secondary']], tn_palettes[['Support1']]))
+#  ,ggplot2.discrete.colour= list(c(tn_palettes[['Official']], tn_palettes[['Secondary']],tn_palettes[['Support1']]))
+#)

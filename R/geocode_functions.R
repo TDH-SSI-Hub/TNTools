@@ -1,68 +1,235 @@
 
-#' Function to interface with the TN geocoder. Needs a lot of love.
+#' API URLs for the TN geocoder
 #'
-#' @param df dataframe to use and return with additional columns
-#' @param match_on Named character vector of columns in the dataframe that map to geocoded elements.
-#'  geocoder_name=df_name
-#' @param return_fields Character vector of fields to return. Check TN geocoder site for options.
+#' @param service NA or geocodeAddresses. If NA, returns the URL for the geocode server.
+#'  If geocodeAddresses, returns URL for geocode addresses service.
+#'
+#' @return URL
+#' @export
+tn_geocoder_url <- function(service=NA){
+  base_url<-"https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer"
+  if(is.na(service)){
+    return(base_url)
+  }else if(grepl('geocodeAddresses',service,ignore.case = T)){
+    return(paste0(base_url,'/geocodeAddresses'))
+  }else{
+    stop('Invalid service. Must be NA or geocodeAddresses')
+  }
+}
+
+#' Special input/outputs handled by tn_geocode_addresses()
+#'
+#' These names are not recognized by the geocoding api, but are handled by tn_geocode_addresses().
+#'
+#' @return dataframe of aliases and the official names they correspond to.
+#' @export
+tn_geocoder_specialcases<-function(){
+  data.frame(alias=c('State','County','Zip', 'Street','Lat','Lon','Latitude','Longitude')
+            ,name=c('region','subregion','postal','address','y','x','y','x'))
+}
+
+
+#' Valid input fields for tn_geocode_addresses()
+#'
+#' @param special_cases T/F Include output aliases such as Street, Lat, Lon which are not handled by the geocoder,
+#'  but which tn_geocode_addresses() handles.
+#'
+#' @return Vector of names
+#' @export
+tn_api_inputs<-function(special_cases=F){
+  test<-POST('https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer', body=list(f='pjson'))
+  test_res<-fromJSON(rawToChar(test$content))
+  ret_val<-unlist(strsplit(unique(c(test_res$addressFields$name,test_res$addressFields$alias)),' or '))
+  if(special_cases) ret_val<-c(tn_geocoder_specialcases()$alias,ret_val)
+  ret_val
+}
+
+#' Valid output fields for tn_geocode_addresses()
+#'
+#' @param special_cases T/F Include output aliases such as Street, Lat, Lon which are not handled by the geocoder,
+#'  but which tn_geocode_addresses() handles.
+#'
+#' @return Vector of names
+#' @export
+tn_api_outputs<-function(special_cases=F){
+  test<-POST('https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer', body=list(f='pjson'))
+  test_res<-fromJSON(rawToChar(test$content))
+  ret_val<-unlist(strsplit(unique(c(test_res$candidateFields$name,test_res$candidateFields$alias)),' or '))
+  if(special_cases) ret_val<-c(tn_geocoder_specialcases()$alias,ret_val)
+  ret_val
+}
+
+
+#' Function to interface with the TN geocoder.
+#'
+#' Interface to https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_COMPOSITE/GeocodeServer/geocodeAddresses
+#'
+#' @param df dataframe to use
+#' @param match_on Named character vector of columns in the dataframe that map to geocoded elements (geocoder_name=df_name).
+#'  Or an unnamed vector of columns that are valid geocoder inputs.
+#'  Or a partially named vector where columns that are not valid geocoder inputs are named as valid inputs.
+#'  Valid geocoder inputs can be found using tn_api_inputs().
+#' @param return_fields Character vector of valid fields to return. Valid geocoder inputs can be found using tn_api_outputs().
+#'  To return all possible fields, use '*','','All', or NA. To return the default minimum fields, use 'None'.
+#'  Invalid fields generate a warning and will be ignored.
+#' @param exclude_default_fields T/F Should default geocoding fields not listed in return_fields be excluded from the output?
+#'  Default fields include: Address, X, Y, and Score. This parameter is ignored if return_fields is '*','','All','None', or NA.
 #'
 #' @return Dataframe with added columns from geocoder
 #' @export
-geocode_address<-function(df,
-                          match_on=c('address'='pt_address'
-                                     ,'city'='pt_city'
-                                     ,'region'='pt_state'
-                                     ,'postal'='pt_zip'
+tn_geocode_addresses<-function(df,
+                          match_on=c('Address'='Address'
+                                     ,'City'='City'
+                                     ,'State'='State'
+                                     ,'Postal'='Postal'
                           )
-                          , return_fields=c('Score','Match_addr','Subregion','X','Y')){
+                          , return_fields=c('Score','Match_addr','County','X','Y')
+                          , exclude_default_fields=T
+){
 
+  # Validate that matching columns exist in df
+  missing_col<-match_on[!match_on %in% colnames(df)]
+  if(length(missing_col)>0){
+    stop(paste0('The following column(s) do not exist in the dataframe: ',paste0(missing_col, collapse=', ')))
+  }
+
+  # Load valid inputs and outputs
+  valid_in<-tn_api_inputs(T)
+  valid_out<-tn_api_outputs(T)
+
+  # Load special case info
+  special_in<-tn_geocoder_specialcases()$alias
+  special_out<-tn_geocoder_specialcases()$name
+
+  # Add ID col to df
   df$OBJECTID<-1:nrow(df)
 
+  # Create df to send to geocoder using match columns
   geo_df<-data.frame(OBJECTID=df$OBJECTID)
+
+  # Set names to send to geocoder
   new_col<-names(match_on)
+  if(is.null(new_col)) new_col <- match_on
+  new_col[new_col=='']<-match_on[new_col=='']
+  for(sc in 1:length(special_in)){
+    new_col[tolower(new_col)==tolower(special_in[sc])]<-special_out[sc]
+  }
+
+  # Validate that input fields are recognized by geocoder
+  invalid_in<-new_col[!tolower(new_col) %in% tolower(valid_in)]
+  if(length(invalid_in)>0){
+    stop(paste0('The following input(s) are not recognized by the geocoder: ',paste0(invalid_in), collapse=', '),
+         '\nValid inputs are the following: ',paste0(c(special_in,valid_in), collapse=', '))
+  }
+
+  # Validate that output fields are recognized by geocoder
+  invalid_out<-return_fields[!tolower(return_fields) %in% tolower(c(valid_out,'State','County','Zip','None','*',''))]
+  if(length(invalid_out)>0){
+    return_fields<-return_fields[!return_fields %in% invalid_out]
+    warning(paste0('The following return field(s) are not recognized by the geocoder and will be ignored: ',paste0(invalid_out), collapse=', '),
+            '\nValid return fields are the following: None, ',paste0(c(special_in,valid_out), collapse=', '))
+  }
+
+  # Create output field string for geocoder
+  outfields<-paste0(trimws(return_fields), collapse = ',')
+  for(sc in 1:length(special_in)){
+    outfields<-gsub(special_in[sc],special_out[sc],outfields, ignore.case = T)
+  }
+  outfields_vec<-unlist(strsplit(outfields,','))
+
+  # If set output to everything if no outputs are specified
+  if(length(outfields)==0||outfields==''||outfields=='*'||outfields=='NA'||tolower(outfields)=='all'){
+    outfields<-'*'
+    message('No return fields specified; returning all possible fields')
+  }
+
+  # Add score if it isn't there
+  if(!grepl('score',outfields,ignore.case = T)&outfields!='*'){
+    outfields<-paste0(outfields,',Score')
+  }
+
+  # Add data to geocoding df
   for(j in 1:length(match_on)){
     geo_df[,new_col[j]]<-df[,match_on[j]]
   }
 
+  # Create list to fill with output data
   geocode_response<-list()
-  batch_size<-10
 
+  # Process in batches of 1000
+  batch_size<-1000
   for(i in 1:ceiling((nrow(geo_df)/batch_size))){
-    # Put the dataframe in a list
-    jlist<-list("records"=geo_df[((i-1)*batch_size+1):min(i*batch_size,nrow(geo_df)),])
+    # Limit to current batch
+    jlist<-geo_df[((i-1)*batch_size+1):min(i*batch_size,nrow(geo_df)),]
 
+    # Add attributes as a name
+    res <- lapply( seq_len( nrow( jlist ) ), function(i) {
+      lst <- list( as.list( jlist[i, , drop = F] ) )
+      attr( lst, "names" ) <- "attributes"
+      lst
+    })
 
-    # The sketchy part
-    # Add the attributes header thing to each 'line' in the dataframe
-    j1<-gsub('\\{\\\"OBJECTID\"','\\{\\\"attributes\\\":\\{\\\"OBJECTID\"',as.character(jsonlite::toJSON(jlist)))
-    # Close the brackets we just opened
-    j2<-gsub('\\},','\\}\\},',j1) # in the middle
-    j3<-gsub('\\}\\]','\\}\\}\\]',j2) # last bracket
+    # create post body, content and response format
+    body<-list(addresses=toJSON(list( records = res ), auto_unbox = T)
+               , f='pjson'
+               , outfields=outfields
+    )
 
-    # Request to the geocoding API
-    response <- httr::POST(geocoding_api_url,
-                     query = list(
-                       addresses = j3
-                       ,f = "pjson"
-                     )
+    # POST
+    response <- POST(tn_geocoder_url('geocodeAddresses')
+                     , body = body
+                     , encode = 'form'
+                     #, verbose()
     )
 
     # Parse the JSON response
-    res_df<-tidyr::unnest(as.data.frame(jsonlite::fromJSON(rawToChar(response$content))),tidyr::everything())
+    res_df<-unnest(as.data.frame(fromJSON(rawToChar(response$content))),everything())
 
+    # add to list
     geocode_response[[length(geocode_response)+1]] <- res_df
 
+    message(paste0('Geocoded ',nrow(jlist),' records in batch ',i,' of ',ceiling((nrow(geo_df)/batch_size))))
   }
 
+  # Combine outputs
+  all_data<-as.data.frame(rbindlist(geocode_response, use.names = T))
 
+  # Score summary stats
+  message(paste0('Match score mean: ',round(mean(all_data$Score, na.rm = T),1), ' (',round(mean(all_data$Score[all_data$Score!=0], na.rm = T),1),' excluding failed matches)'))
+  message(paste0('Match score median: ',round(median(all_data$Score, na.rm = T),1), ' (',round(median(all_data$Score[all_data$Score!=0], na.rm = T),1),' excluding failed matches)'))
+  message(paste0('Match score above 90: ',round(100*sum(all_data$Score>90, na.rm = T)/nrow(all_data),1),'% (',round(100*sum(all_data$Score[all_data$Score!=0]>90, na.rm = T)/sum(all_data$Score!=0),1),'% excluding failed matches)'))
 
-  all_data<-as.data.frame(data.table::rbindlist(geocode_response))
+  # Only keep one of x/y and X/Y
+  if('x' %in% colnames(all_data)&'X' %in% colnames(all_data)){
+    remove_x<-'x'
+    if('x' %in% return_fields) remove_x<-'X'
+    all_data<-all_data[,colnames(all_data)!=remove_x]
+  }
+  if('y' %in% colnames(all_data)&'Y' %in% colnames(all_data)){
+    remove_y<-'y'
+    if('y' %in% return_fields) remove_y<-'Y'
+    all_data<-all_data[,colnames(all_data)!=remove_y]
+  }
 
-  all_data<-all_data[,c('ResultID',return_fields)]
+  # Optional filter to output columns
+  if(exclude_default_fields&outfields!='*'&tolower(return_fields[1])!='none'){
+    for(oc in outfields_vec){
+      colnames(all_data)<-gsub(paste0('^',oc,'$'),oc,colnames(all_data),ignore.case = T)
+    }
+    all_data<-all_data[,c('ResultID',outfields_vec)]
+  }
 
+  # Rename output fields to match case of return_fields
+  for(sc in 1:length(special_in)){
+    if(any(grepl(paste0('^',special_out[sc],'$'),outfields_vec, ignore.case = T))& any(grepl(paste0('^',special_in[sc],'$'),return_fields, ignore.case = T))){
+      repw<-grep(paste0('^',special_in[sc],'$'),return_fields, ignore.case = T, value=T)
+      colnames(all_data)<-gsub(paste0('^',special_out[sc],'$'),repw,colnames(all_data), ignore.case = T)
+    }
+  }
+
+  # Merge geocoded data to df
   out_data<-merge(df,all_data, by.x = 'OBJECTID', by.y = 'ResultID', all = T)
   out_data<-out_data[,colnames(out_data)!='OBJECTID']
 
   return(out_data)
-
 }
