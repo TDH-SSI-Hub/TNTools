@@ -1,6 +1,6 @@
 
 library(usethis)
-
+#library(TNTools)
 
 # county to region
 tn_counties<-read.csv("J:\\SSI\\_Greg\\TNTools\\data-raw\\regions\\county_to_region.csv")
@@ -36,6 +36,7 @@ use_data(tn_logo_name_list, overwrite = T)
 
 # Shapefiles
 #load('J:\\SSI\\_Greg\\TNTools\\data-raw\\Shapefiles\\county_shapefiles.rdata')
+#tn_county_shapefiles$Health_Region<-tn_county_to_region(tn_county_shapefiles$NAME)
 #use_data(tn_county_shapefiles, overwrite = T)
 
 
