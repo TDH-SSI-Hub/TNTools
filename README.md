@@ -164,10 +164,10 @@ the strings contain ‘county’. This function relies on the `tn_counties`
 dataframe, which is also included in the package.
 
 ``` r
-tn_county_to_region(c('VanBuren','Van Buren','vanburen county'))
+tn_county_to_region(c('VanBuren','Van Buren','vanburen county','Sumner'))
 ```
 
-    [1] "Upper Cumberland" "Upper Cumberland" "Upper Cumberland"
+    [1] "Upper Cumberland" "Upper Cumberland" "Upper Cumberland" "Mid-Cumberland"  
 
 ## `ggplot2` and Branding
 
