@@ -5,7 +5,7 @@
 \alias{tn_county_shapefiles}
 \title{Shapefiles for each county in TN}
 \format{
-An object of class \code{sf} (inherits from \code{data.frame}) with 95 rows and 59 columns.
+An object of class \code{sf} (inherits from \code{data.frame}) with 95 rows and 60 columns.
 }
 \usage{
 tn_county_shapefiles
