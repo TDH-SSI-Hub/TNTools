@@ -91,15 +91,15 @@ outMail$Send()
 ## TN Geocoding
 
 The TN geocoding API should be used for geocoding whenever possible,
-since it is updated monthly. The goal for this section of TNTools is to
-make an easy interface to the geocoder. Currently, the only supported
-service is the geocode address functionality.
+since it is updated monthly. `TNTools` includes functions which provide
+an easy interface to the geocoder.
 
-The main function in this section is `tn_geocode_addresses()`. The first
-argument is a dataframe with columns that can be used as inputs to the
-geocoder. The `match_on` parameter specifies which columns are to be
-sent to the geocoder, and what they represent. In the example below, the
-dataframe has a street address column “locAddress”, so we specify that
+Currently, the only supported service is the geocode address
+functionality - `tn_geocode_addresses()`. The first argument is a
+dataframe with columns that can be used as inputs to the geocoder. The
+`match_on` parameter specifies which columns are to be sent to the
+geocoder, and what they represent. In the example below, the dataframe
+has a street address column “locAddress”, so we specify that
 `Address="locAddress"`. We do the same for city, but the state field is
 already named correctly and doesn’t need to be named in the parameter.
 
@@ -122,8 +122,8 @@ tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
 The default output includes the match score, match address, county, and
 X/Y coordinates (longitude and latitude). You can specify the fields the
 return by using the `return_fields` parameter. In addition to specific
-parameters, you can use ‘\*’,‘All’,’‘, or `NA` to return all fields, or
-’None’ to return the default minimum fields.
+parameters, you can use `'*'`,`'All'`,`''`, or `NA` to return all
+fields, or `'None'` to return the default minimum fields.
 
 ``` r
 tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
