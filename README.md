@@ -122,7 +122,7 @@ tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
 The default output includes the match score, match address, county, and
 X/Y coordinates (longitude and latitude). You can specify the fields the
 return by using the `return_fields` parameter. In addition to specific
-parameters, you can use ’\*‘,’All’,’‘, or `NA` to return all fields, or
+parameters, you can use ‘\*’,‘All’,’‘, or `NA` to return all fields, or
 ’None’ to return the default minimum fields.
 
 ``` r
@@ -156,6 +156,19 @@ tn_geocode_addresses(tdh, match_on = c(Street='locAddress'
                     locAddress   locCity State   County   Zip
     1 710 James Robertson Pwky Nashville    TN DAVIDSON 37203
 
+### Health Regions
+
+`tn_county_to_region()` allows you to use the county to derive the
+health region. This is case-/space-insensitive and works whether or not
+the strings contain ‘county’. This function relies on the `tn_counties`
+dataframe, which is also included in the package.
+
+``` r
+tn_county_to_region(c('VanBuren','Van Buren','vanburen county'))
+```
+
+    [1] "Upper Cumberland" "Upper Cumberland" "Upper Cumberland"
+
 ## `ggplot2` and Branding
 
 TN branding requirements specify certain fonts and colors for public
@@ -169,7 +182,7 @@ ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
   theme_tn()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-8-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
 
 In addition, you can set the color for various plot elements using the
 function parameters. If a color is not branding compliant, a warning
@@ -188,7 +201,7 @@ flowers<-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
 flowers
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
 
 Official hex colors can be found using `tn_color_names()` or
 `tn_colors_show()`. This function can be filtered by palette to make it
@@ -199,7 +212,7 @@ for the colors.
 tn_color_show()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-11-1.png)
 
 ### Color Palettes
 
@@ -210,7 +223,7 @@ see them.
 tn_palette_show()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-11-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-12-1.png)
 
 These palettes can be used with another set of custom functions:
 `scale_fill_tn()` and `scale_color_tn()`
@@ -220,7 +233,7 @@ flowers +
   scale_color_tn('Contrast')
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-12-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-13-1.png)
 
 For continuous scales, use `discrete=FALSE`. This will result in colors
 on the plot which do not conform to the branding standard because
@@ -235,4 +248,4 @@ plot, in the left, right, or center (using the `position` parameter).
 add_tn_logo(flowers,"TN Dept of Health Color", position = 'top right')
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-13-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-14-1.png)

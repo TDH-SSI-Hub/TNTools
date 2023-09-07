@@ -37,8 +37,8 @@ tn_geocoder_specialcases<-function(){
 #' @return Vector of names
 #' @export
 tn_api_inputs<-function(special_cases=F){
-  test<-POST('https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer', body=list(f='pjson'))
-  test_res<-fromJSON(rawToChar(test$content))
+  test<-httr::POST('https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer', body=list(f='pjson'))
+  test_res<-jsonlite::fromJSON(rawToChar(test$content))
   ret_val<-unlist(strsplit(unique(c(test_res$addressFields$name,test_res$addressFields$alias)),' or '))
   if(special_cases) ret_val<-c(tn_geocoder_specialcases()$alias,ret_val)
   ret_val
@@ -52,8 +52,8 @@ tn_api_inputs<-function(special_cases=F){
 #' @return Vector of names
 #' @export
 tn_api_outputs<-function(special_cases=F){
-  test<-POST('https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer', body=list(f='pjson'))
-  test_res<-fromJSON(rawToChar(test$content))
+  test<-httr::POST('https://tnmap.tn.gov/arcgis/rest/services/LOCATORS/TN_ADDRESSPOINTS/GeocodeServer', body=list(f='pjson'))
+  test_res<-jsonlite::fromJSON(rawToChar(test$content))
   ret_val<-unlist(strsplit(unique(c(test_res$candidateFields$name,test_res$candidateFields$alias)),' or '))
   if(special_cases) ret_val<-c(tn_geocoder_specialcases()$alias,ret_val)
   ret_val
@@ -170,20 +170,20 @@ tn_geocode_addresses<-function(df,
     })
 
     # create post body, content and response format
-    body<-list(addresses=toJSON(list( records = res ), auto_unbox = T)
+    body<-list(addresses=jsonlite::toJSON(list( records = res ), auto_unbox = T)
                , f='pjson'
                , outfields=outfields
     )
 
     # POST
-    response <- POST(tn_geocoder_url('geocodeAddresses')
+    response <- httr::POST(tn_geocoder_url('geocodeAddresses')
                      , body = body
                      , encode = 'form'
                      #, verbose()
     )
 
     # Parse the JSON response
-    res_df<-unnest(as.data.frame(fromJSON(rawToChar(response$content))),everything())
+    res_df<-tidyr::unnest(as.data.frame(jsonlite::fromJSON(rawToChar(response$content))),everything())
 
     # add to list
     geocode_response[[length(geocode_response)+1]] <- res_df
@@ -192,7 +192,7 @@ tn_geocode_addresses<-function(df,
   }
 
   # Combine outputs
-  all_data<-as.data.frame(rbindlist(geocode_response, use.names = T))
+  all_data<-as.data.frame(data.table::rbindlist(geocode_response, use.names = T))
 
   # Score summary stats
   message(paste0('Match score mean: ',round(mean(all_data$Score, na.rm = T),1), ' (',round(mean(all_data$Score[all_data$Score!=0], na.rm = T),1),' excluding failed matches)'))
@@ -232,4 +232,19 @@ tn_geocode_addresses<-function(df,
   out_data<-out_data[,colnames(out_data)!='OBJECTID']
 
   return(out_data)
+}
+
+
+
+#' Convert TN counties to health regions
+#'
+#' @param county vector of counties in TN
+#'
+#' @return vector of health regions
+#' @export
+tn_county_to_region<-function(county){
+  county<-tolower(gsub(' |county','',county, ignore.case = T))
+  c2r<-tn_counties
+  c2r$County<-tolower(gsub(' ','',c2r$County))
+  sapply(county, function(x) c2r$Health_Region[x==c2r$County], USE.NAMES = F)
 }
