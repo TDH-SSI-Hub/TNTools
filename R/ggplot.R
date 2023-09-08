@@ -38,15 +38,29 @@ theme_tn <- function(title_color=NA
       plot.background = ggplot2::element_rect(fill=background_color, color=NA),
       legend.background = ggplot2::element_rect(fill=background_color, color=NA),
       legend.box.background = ggplot2::element_rect(fill=background_color, color=NA),
-      plot.title = ggplot2::element_text(family = font,size = 20,face = 'bold',vjust = 1,color=title_color),
-      plot.subtitle = ggplot2::element_text(family = font,size = 12,vjust = .5,color=subtitle_color),
-      plot.caption = ggplot2::element_text(family = font,size = 9,color=caption_color),
-      axis.title = ggplot2::element_text(family = font,size = 10,color=axis_text_color),
-      axis.text = ggplot2::element_text(family = font,size = 9,color=axis_text_color),
+      plot.title = ggplot2::element_text(family = font
+                                         ,size = 20
+                                         ,face = 'bold',vjust = 1,color=title_color),
+      plot.subtitle = ggplot2::element_text(family = font
+                                            ,size = 12
+                                            ,vjust = .5,color=subtitle_color),
+      plot.caption = ggplot2::element_text(family = font
+                                           ,size = 11
+                                           ,color=caption_color),
+      axis.title = ggplot2::element_text(family = font
+                                         ,size = 12
+                                         ,color=axis_text_color),
+      axis.text = ggplot2::element_text(family = font
+                                        ,size = 11
+                                        ,color=axis_text_color),
       axis.line = ggplot2::element_line(color=axis_line_color,linewidth = 1,lineend = 'round'),
       axis.ticks = ggplot2::element_line(color=axis_line_color,lineend = 'round'),
-      legend.title = ggplot2::element_text(family = font,size = 10,color=axis_text_color),
-      legend.text = ggplot2::element_text(family = font,size = 9,color=axis_text_color)
+      legend.title = ggplot2::element_text(family = font
+                                           ,size = 12
+                                           ,color=axis_text_color),
+      legend.text = ggplot2::element_text(family = font
+                                          ,size = 11
+                                          ,color=axis_text_color)
     )
 }
 
