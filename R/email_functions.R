@@ -177,11 +177,11 @@ email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc 
 
     if (send) {
 
-      if (outMail[["to"]] == "") {
-        message("Email has no main recipient; email discarded")
-        outMail$Close(1)
-        return(F)
-      }
+      #if (outMail[["to"]] == "") {
+      #  message("Email has no main recipient; email discarded")
+      #  outMail$Close(1)
+      #  return(F)
+      #}
 
 
       return(outMail$Send())
