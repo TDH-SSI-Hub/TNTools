@@ -4,7 +4,7 @@
 \alias{tn_clean_date}
 \title{Cleans dates in a variety of formats}
 \usage{
-tn_clean_date(x, format = "\%m/\%d/\%Y")
+tn_clean_date(x, format = NA)
 }
 \arguments{
 \item{x}{vector of date-like values}
