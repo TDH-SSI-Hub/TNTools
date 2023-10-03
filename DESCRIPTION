@@ -25,6 +25,8 @@ Imports:
     magick,
     cowplot,
     scales,
-    rlang
+    rlang,
+    anytime,
+    parsedate
 Depends: 
     R (>= 2.10)
