@@ -253,10 +253,12 @@ add_tn_logo(flowers,"TN Dept of Health Color", position = 'top right')
 
 ## Data Cleaning
 
-The `tn_clean_date()` combines 3 date parsing techniques: -
-`anytime::anydate()` - `parsedate::parse_date()` -
-`as.Date(x, origin = "1899-12-30")` for Excel dates formatted as a
-number
+The `tn_clean_date()` combines 3 date parsing techniques:
+
+- `anytime::anydate()`
+- `parsedate::parse_date()`
+- `as.Date(x, origin = "1899-12-30")` for Excel dates formatted as a
+  number
 
 ``` r
 bad_dates<-c('1 Feb 2020','2/2/20','February 3rd 2020','43865.00
