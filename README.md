@@ -258,9 +258,6 @@ The `tn_clean_date()` combines 3 date parsing techniques: -
 `as.Date(x, origin = "1899-12-30")` for Excel dates formatted as a
 number
 
-You can also specify an output format acceptable to `format()`,
-otherwise the return value is a date.
-
 ``` r
 bad_dates<-c('1 Feb 2020','2/2/20','February 3rd 2020','43865.00
 ')
@@ -269,6 +266,9 @@ tn_clean_date(bad_dates)
 ```
 
     [1] "2020-02-01" "2020-02-02" "2020-02-03" "2020-02-04"
+
+The default return value will be a date vector, but you can also specify
+an output format acceptable to `format()` to return a string.
 
 ``` r
 tn_clean_date(bad_dates, format='%m/%d/%Y')
