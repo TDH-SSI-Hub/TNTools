@@ -11,6 +11,7 @@ may be added periodically:
 - Geocoding: Functions which interface with the TN Geocoding API (needs
   work), as well as TN shapefiles
 - ggplot2: Themes, color palettes, and TN logos
+- Data cleaning: Common data tasks, currently just date cleaning
 
 ### Download this package
 
@@ -249,3 +250,28 @@ add_tn_logo(flowers,"TN Dept of Health Color", position = 'top right')
 ```
 
 ![](README_files/figure-commonmark/unnamed-chunk-14-1.png)
+
+## Data Cleaning
+
+The `tn_clean_date()` combines 3 date parsing techniques: -
+`anytime::anydate()` - `parsedate::parse_date()` -
+`as.Date(x, origin = "1899-12-30")` for Excel dates formatted as a
+number
+
+You can also specify an output format acceptable to `format()`,
+otherwise the return value is a date.
+
+``` r
+bad_dates<-c('1 Feb 2020','2/2/20','February 3rd 2020','43865.00
+')
+
+tn_clean_date(bad_dates)
+```
+
+    [1] "2020-02-01" "2020-02-02" "2020-02-03" "2020-02-04"
+
+``` r
+tn_clean_date(bad_dates, format='%m/%d/%Y')
+```
+
+    [1] "02/01/2020" "02/02/2020" "02/03/2020" "02/04/2020"
