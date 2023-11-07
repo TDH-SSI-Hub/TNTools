@@ -1,6 +1,6 @@
 # TNTools
 
-# Overview
+## Overview
 
 This package is a collection of convenience functions and data for TN
 Department of Health users. There are several areas addressed, and more
@@ -261,8 +261,7 @@ The `tn_clean_date()` combines 3 date parsing techniques:
   number
 
 ``` r
-bad_dates<-c('1 Feb 2020','2/2/20','February 3rd 2020','43865.00
-')
+bad_dates<-c('1 Feb 2020','2/2/20','February 3rd 2020','43865.00')
 
 tn_clean_date(bad_dates)
 ```
