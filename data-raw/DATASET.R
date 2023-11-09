@@ -39,6 +39,15 @@ use_data(tn_logo_name_list, overwrite = T)
 #tn_county_shapefiles$Health_Region<-tn_county_to_region(tn_county_shapefiles$NAME)
 #use_data(tn_county_shapefiles, overwrite = T)
 
+#library(sf)
+#tn_region_shapefiles<-sf::read_sf('H:\\CEDS\\CEDEP-WIDE (All Programs)\\GIS\\##TN Shape Files##\\Regions\\TNRegions.shp')
+#use_data(tn_region_shapefiles, overwrite = T)
+
+#tn_zipcode_shapefiles<-sf::read_sf('H:\\CEDS\\CEDEP-WIDE (All Programs)\\GIS\\##TN Shape Files##\\Zip Codes\\Zip_Codes_TN.shp')
+#use_data(tn_zipcode_shapefiles, overwrite = T)
+
+#tn_census_shapefiles<-sf::read_sf('H:\\CEDS\\CEDEP-WIDE (All Programs)\\GIS\\##TN Shape Files##\\CensusTracts\\CensusTractsTN_2020.shp')
+#use_data(tn_census_shapefiles, overwrite = T)
 
 # On load (put elsewhere)
 #options(
