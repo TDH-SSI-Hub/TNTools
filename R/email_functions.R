@@ -156,7 +156,7 @@ email_draft <- function(to='', subject='', body='', from = NA, attach = c(), cc 
       }
     }
 
-    if (grepl("<br>",body)) {
+    if (grepl("<br>|<tr>",body)) {
       outMail[["HTMLBody"]] <- body
     } else {
       outMail[["body"]] <- body
