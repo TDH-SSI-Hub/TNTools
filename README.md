@@ -137,9 +137,9 @@ tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
                     locAddress   locCity State   County Postal
     1 710 James Robertson Pwky Nashville    TN DAVIDSON  37203
 
-For a list of valid inputs and outputs use `tn_valid_inputs()` and
-`tn_valid_outputs()`. By default, these return the parameters accepted
-or returned by the geocoder. `tn_geocode_addresses()` can handle some
+For a list of valid inputs and outputs use `tn_api_inputs()` and
+`tn_api_outputs()`. By default, these return the parameters accepted or
+returned by the geocoder. `tn_geocode_addresses()` can handle some
 common aliases for important fields (e.g., ‘Street’ is recognized as
 ‘Address’). Running `tn_valid_inputs(special_cases=T)` or
 `tn_valid_outputs(special_cases=T)` will include additional aliases you
