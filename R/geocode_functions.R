@@ -249,7 +249,7 @@ tn_county_to_region<-function(county){
   unlist(sapply(county, function(x) {
 
     mc<-c2r$Health_Region[x==c2r$County]
-    if(length(mc==0)) return(NA)
+    if(length(mc)==0) return(NA)
     mc
     }, USE.NAMES = F)
   )
