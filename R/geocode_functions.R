@@ -247,10 +247,12 @@ tn_county_to_region<-function(county){
   c2r<-tn_counties
   c2r$County<-tolower(gsub(' ','',c2r$County))
   unlist(sapply(county, function(x) {
-
     mc<-c2r$Health_Region[x==c2r$County]
-    if(length(mc)==0) return(NA)
-    mc
-    }, USE.NAMES = F)
+    if(length(mc)==0){
+      return(NA)
+    }else{
+      return(mc[1])
+    }
+  }, USE.NAMES = F)
   )
 }
