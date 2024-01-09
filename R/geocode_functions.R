@@ -164,7 +164,7 @@ tn_geocode_addresses<-function(df,
 
   pb <- progress_bar$new(
     format = "  Geocoding [:bar] :current/:total batches (:percent) in :elapsed eta: :eta",
-    total = batch_num, clear = FALSE, width= 60)
+    total = batch_num, clear = FALSE, width= 80)
 
   pb$tick(0)
   for(i in 1:batch_num){
