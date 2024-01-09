@@ -87,6 +87,8 @@ tn_geocode_addresses<-function(df,
                           , exclude_default_fields=T
 ){
 
+
+
   # Validate that matching columns exist in df
   missing_col<-match_on[!match_on %in% colnames(df)]
   if(length(missing_col)>0){
@@ -158,7 +160,14 @@ tn_geocode_addresses<-function(df,
 
   # Process in batches of 1000
   batch_size<-1000
-  for(i in 1:ceiling((nrow(geo_df)/batch_size))){
+  batch_num<-ceiling((nrow(geo_df)/batch_size))
+
+  pb <- progress_bar$new(
+    format = "  Geocoding [:bar] :current/:total batches (:percent) in :elapsed eta: :eta",
+    total = batch_num, clear = FALSE, width= 60)
+
+  pb$tick(0)
+  for(i in 1:batch_num){
     # Limit to current batch
     jlist<-geo_df[((i-1)*batch_size+1):min(i*batch_size,nrow(geo_df)),]
 
@@ -187,8 +196,9 @@ tn_geocode_addresses<-function(df,
 
     # add to list
     geocode_response[[length(geocode_response)+1]] <- res_df
+    pb$tick(1)
 
-    message(paste0('Geocoded ',nrow(jlist),' records in batch ',i,' of ',ceiling((nrow(geo_df)/batch_size))))
+    #message(paste0('Geocoded ',nrow(jlist),' records in batch ',i,' of ',ceiling((nrow(geo_df)/batch_size))))
   }
 
   # Combine outputs

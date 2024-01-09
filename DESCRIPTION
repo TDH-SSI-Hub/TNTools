@@ -27,6 +27,7 @@ Imports:
     scales,
     rlang,
     anytime,
-    parsedate
+    parsedate,
+    progress
 Depends: 
     R (>= 2.10)
