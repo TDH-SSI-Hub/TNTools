@@ -76,6 +76,7 @@ tn_api_outputs<-function(special_cases=F){
 #'  Default fields include: Address, X, Y, and Score. This parameter is ignored if return_fields is '*','','All','None', or NA.
 #'
 #' @return Dataframe with added columns from geocoder
+#' @import progress
 #' @export
 tn_geocode_addresses<-function(df,
                           match_on=c('Address'='Address'
