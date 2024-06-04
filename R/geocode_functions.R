@@ -68,7 +68,8 @@ tn_api_outputs<-function(special_cases=F){
 #' @param match_on Named character vector of columns in the dataframe that map to geocoded elements (geocoder_name=df_name).
 #'  Or an unnamed vector of columns that are valid geocoder inputs.
 #'  Or a partially named vector where columns that are not valid geocoder inputs are named as valid inputs.
-#'  Valid geocoder inputs can be found using tn_api_inputs().
+#'  Valid geocoder inputs can be found using tn_api_inputs(). You may also specify a single column with a combined address using 'SingleLine'='column_name'.
+#'  This will cause any other input fields to be ignored.
 #' @param return_fields Character vector of valid fields to return. Valid geocoder inputs can be found using tn_api_outputs().
 #'  To return all possible fields, use '*','','All', or NA. To return the default minimum fields, use 'None'.
 #'  Invalid fields generate a warning and will be ignored.
@@ -118,8 +119,15 @@ tn_geocode_addresses<-function(df,
     new_col[tolower(new_col)==tolower(special_in[sc])]<-special_out[sc]
   }
 
+  single_match<- 'SingleLine' %in% names(match_on)
+  if(single_match & length(match_on)>1){
+    match_on<-match_on['SingleLine']
+    message('Geocoding method set to SingleLine; all other input fields are ignored.')
+  }
+
   # Validate that input fields are recognized by geocoder
   invalid_in<-new_col[!tolower(new_col) %in% tolower(valid_in)]
+  invalid_in<-invalid_in[invalid_in!='SingleLine']
   if(length(invalid_in)>0){
     stop(paste0('The following input(s) are not recognized by the geocoder: ',paste0(invalid_in), collapse=', '),
          '\nValid inputs are the following: ',paste0(c(special_in,valid_in), collapse=', '))
@@ -178,6 +186,7 @@ tn_geocode_addresses<-function(df,
       attr( lst, "names" ) <- "attributes"
       lst
     })
+
 
     # create post body, content and response format
     body<-list(addresses=jsonlite::toJSON(list( records = res ), auto_unbox = T)
@@ -246,6 +255,26 @@ tn_geocode_addresses<-function(df,
 }
 
 
+#' Function to interface with the TN geocoder.
+#'
+#' A wrapper around tn_geocode_addresses() that takes a vector of addresses as input
+#'
+#' @param x A vector of addresses
+#' @param return_fields Character vector of valid fields to return. Valid geocoder inputs can be found using tn_api_outputs().
+#'  To return all possible fields, use '*','','All', or NA. To return the default minimum fields, use 'None'.
+#'  Invalid fields generate a warning and will be ignored.
+#' @param exclude_default_fields T/F Should default geocoding fields not listed in return_fields be excluded from the output?
+#'  Default fields include: Address, X, Y, and Score. This parameter is ignored if return_fields is '*','','All','None', or NA.
+#'
+#' @return Dataframe with added columns from geocoder
+#' @export
+tn_geocode_vector<-function(x
+                            ,return_fields=c('Score','Match_addr','County','X','Y')
+                            , exclude_default_fields=T
+                            ){
+  tn_geocode_addresses(data.frame(SingleLine=x), match_on = 'SingleLine',return_fields=return_fields,exclude_default_fields=exclude_default_fields)
+}
+
 
 #' Convert TN counties to health regions
 #'
@@ -267,3 +296,53 @@ tn_county_to_region<-function(county){
   }, USE.NAMES = F)
   )
 }
+
+
+
+#' Send a single line to the NIOSH API
+#' @param i The industry string
+#' @param o The occupation string
+#' @param id The ID string/numeric
+#' @export
+niosh_api_single<-function(i,o,id){
+  results<-jsonlite::fromJSON(httr::content(httr::GET("https://wwwn.cdc.gov/nioccs/IOCode", query = list(i = i, o = o, c="1")), as="text"))
+
+  out_df<-data.frame(matrix(c(id, unlist(results)[1:6]), ncol=7))
+  names(out_df)<-c('ID','Industry_Code','Industry_Title','Industry_Score'
+                   ,'Occupation_Code','Occupation_Title','Occupation_Score')
+  out_df
+}
+
+#' Standardize a dataframe of industries and occupations
+#'
+#' This function outputs a dataframe with an ID column, and codes, tiles, and match scores for industry and occupation.
+#'
+#' @param df A dataframe with industry and occupation columns
+#' @param id_col String with the column name for the ID. Optional, will be assigned to row number if absent.
+#' @param industry_col String with the column name for the industry.
+#' @param occupation_col String with the column name for the occupation.
+#' @export
+tn_niosh_api<-function(df,id_col=NA,industry_col='Industry',occupation_col='Occupation'){
+  if(is.na(id_col)){
+    id_col<-'niosh_id'
+    df[,id_col]<-1:nrow(df)
+  }
+
+  df2<-data.frame(matrix(NA,ncol = 7, nrow=nrow(df)))
+  colnames(df2)<-c(id_col,'Industry_Code','Industry_Title','Industry_Score','Occupation_Code','Occupation_Title','Occupation_Score')
+
+  pb <- progress::progress_bar$new(
+    format = "  NIOSH API [:bar] :current/:total (:percent) in :elapsed eta: :eta",
+    total = nrow(df), clear = FALSE, width= 80)
+
+  tickmark<-pb$tick(0)
+
+for (x in 1:nrow(df2)){
+  df2[x,]<-niosh_api_single(i=df[x,industry_col]
+                            ,o=df[x,occupation_col]
+                            ,df[x,id_col])
+  pb$tick(1)
+}
+df2
+}
+
