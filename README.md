@@ -105,7 +105,7 @@ has a street address column “locAddress”, so we specify that
 already named correctly and doesn’t need to be named in the parameter.
 
 ``` r
-tdh<-data.frame(locAddress='710 James Robertson Pwky'
+tdh<-data.frame(locAddress='710 James Robertson Pkwy'
            ,locCity='Nashville'
            ,State='TN')
 
@@ -116,7 +116,7 @@ tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
 ```
 
                     locAddress   locCity State Score
-    1 710 James Robertson Pwky Nashville    TN 99.44
+    1 710 James Robertson Pkwy Nashville    TN   100
                                           Match_addr   County         X        Y
     1 710 JAMES ROBERTSON PKWY, NASHVILLE, TN, 37203 DAVIDSON -86.78719 36.16781
 
@@ -135,7 +135,7 @@ tn_geocode_addresses(tdh, match_on = c(Address='locAddress'
 ```
 
                     locAddress   locCity State   County Postal
-    1 710 James Robertson Pwky Nashville    TN DAVIDSON  37203
+    1 710 James Robertson Pkwy Nashville    TN DAVIDSON  37203
 
 For a list of valid inputs and outputs use `tn_api_inputs()` and
 `tn_api_outputs()`. By default, these return the parameters accepted or
@@ -155,7 +155,7 @@ tn_geocode_addresses(tdh, match_on = c(Street='locAddress'
 ```
 
                     locAddress   locCity State   County   Zip
-    1 710 James Robertson Pwky Nashville    TN DAVIDSON 37203
+    1 710 James Robertson Pkwy Nashville    TN DAVIDSON 37203
 
 `tn_county_to_region()` allows you to use the county to derive the
 health region. This is case-/space-insensitive and works whether or not
