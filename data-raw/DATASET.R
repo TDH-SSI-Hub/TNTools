@@ -32,7 +32,7 @@ tn_logo_name_list<-gsub('\\.png','',tn_logo_files)
 #}
 
 use_data(tn_logo_name_list, overwrite = T)
-
+#library(TNTools)
 
 # Shapefiles
 #load('J:\\SSI\\_Greg\\TNTools\\data-raw\\Shapefiles\\county_shapefiles.rdata')
@@ -41,6 +41,8 @@ use_data(tn_logo_name_list, overwrite = T)
 
 #library(sf)
 #tn_region_shapefiles<-sf::read_sf('H:\\CEDS\\CEDEP-WIDE (All Programs)\\GIS\\##TN Shape Files##\\Regions\\TNRegions.shp')
+#library(sf)
+#st_crs(tn_region_shapefiles) <-st_crs(tn_county_shapefiles)
 #use_data(tn_region_shapefiles, overwrite = T)
 
 #tn_zipcode_shapefiles<-sf::read_sf('H:\\CEDS\\CEDEP-WIDE (All Programs)\\GIS\\##TN Shape Files##\\Zip Codes\\Zip_Codes_TN.shp')
