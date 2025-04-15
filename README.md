@@ -141,8 +141,8 @@ For a list of valid inputs and outputs use `tn_api_inputs()` and
 `tn_api_outputs()`. By default, these return the parameters accepted or
 returned by the geocoder. `tn_geocode_addresses()` can handle some
 common aliases for important fields (e.g., ‘Street’ is recognized as
-‘Address’). Running `tn_valid_inputs(special_cases=T)` or
-`tn_valid_outputs(special_cases=T)` will include additional aliases you
+‘Address’). Running `tn_api_inputs(special_cases=T)` or
+`tn_api_outputs(special_cases=T)` will include additional aliases you
 can use with `tn_geocode_addresses()`. In the example below, we use
 ‘Street’ as an alias for ‘Address’ and ‘Zip’ instead of ‘Postal’.
 
@@ -156,6 +156,21 @@ tn_geocode_addresses(tdh, match_on = c(Street='locAddress'
 
                     locAddress   locCity State   County   Zip
     1 710 James Robertson Pkwy Nashville    TN DAVIDSON 37203
+
+If addresses are contained in a single field, `tn_geocode_vector()` can
+be used. This will still return a dataframe, with one row per input
+address.
+
+``` r
+addresses<-c('1301 Riverfront Pkwy, Chattanooga'
+             ,'665 Mainstream Drive, Nashville')
+
+tn_geocode_vector(addresses, return_fields = c('County','X','Y'))
+```
+
+                             SingleLine   County         X        Y
+    1 1301 Riverfront Pkwy, Chattanooga HAMILTON -85.32024 35.04179
+    2   665 Mainstream Drive, Nashville DAVIDSON -86.81848 36.19551
 
 `tn_county_to_region()` allows you to use the county to derive the
 health region. This is case-/space-insensitive and works whether or not
@@ -179,7 +194,7 @@ ggplot(tn_region_shapefiles, aes(fill=NAME)) +
   theme_tn()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
 
 ## `ggplot2` and Branding
 
@@ -194,7 +209,7 @@ ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
   theme_tn()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-11-1.png)
 
 In addition, you can set the color for various plot elements using the
 function parameters. If a color is not branding compliant, a warning
@@ -213,7 +228,7 @@ flowers<-ggplot(iris, aes(x=Sepal.Width,y=Sepal.Length, color=Species)) +
 flowers
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-11-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-12-1.png)
 
 Official hex colors can be found using `tn_color_names()` or
 `tn_colors_show()`. This function can be filtered by palette to make it
@@ -224,7 +239,7 @@ for the colors.
 tn_color_show()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-12-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-13-1.png)
 
 ### Color Palettes
 
@@ -235,7 +250,7 @@ see them.
 tn_palette_show()
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-13-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-14-1.png)
 
 These palettes can be used with another set of custom functions:
 `scale_fill_tn()` and `scale_color_tn()`
@@ -245,7 +260,7 @@ flowers +
   scale_color_tn('Contrast')
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-14-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-15-1.png)
 
 For continuous scales, use `discrete=FALSE`. This will result in colors
 on the plot which do not conform to the branding standard because
@@ -260,7 +275,7 @@ plot, in the left, right, or center (using the `position` parameter).
 add_tn_logo(flowers,"TN Dept of Health Color", position = 'top right')
 ```
 
-![](README_files/figure-commonmark/unnamed-chunk-15-1.png)
+![](README_files/figure-commonmark/unnamed-chunk-16-1.png)
 
 ## Data Cleaning
 
