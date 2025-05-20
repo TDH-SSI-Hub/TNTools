@@ -27,8 +27,11 @@ Imports:
     anytime,
     parsedate,
     progress
-Remotes: TDH-SSI-Hub/TNgeocodeR
+Remotes: 
+    TDH-SSI-Hub/TNgeocodeR,
+    TDH-SSI-Hub/TNemailR
 Depends: 
     R (>= 3.5),
-    TNgeocodeR
+    TNgeocodeR,
+    TNemailR
     
