@@ -128,6 +128,6 @@ tn_mvps_linelist<-function(year=2024,from=1,to=53,
     httr2::req_perform()
 
 
-  return(suppressWarnings(as.data.frame(rbindlist(httr2::resp_body_json(linelist_response)))))
+  return(suppressWarnings(as.data.frame(data.table::rbindlist(httr2::resp_body_json(linelist_response)))))
 
 }
