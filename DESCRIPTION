@@ -1,7 +1,7 @@
 Package: TNTools
 Type: Package
 Title: Functions and data used by TN Department of Health
-Version: 0.2.0
+Version: 0.3.0
 Author: Greg Chambers
 Maintainer: <greg.chambers@tn.gov>
 Description: Miscellaneous functions and data used by the TN Department of Health.
@@ -9,25 +9,20 @@ Description: Miscellaneous functions and data used by the TN Department of Healt
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports:
-	  sf,
-	  httr,
-	  data.table,
-	  jsonlite,
     tidyr,
-    pkgbuild,
-    devtools,
     dplyr,
-    ggplot2,
-    showtext,
-    grid,
-    magick,
-    cowplot,
-    scales,
     rlang,
     anytime,
-    parsedate,
-    progress
+    parsedate
+Remotes: 
+    TDH-SSI-Hub/TNgeocodeR,
+    TDH-SSI-Hub/TNbrandR,
+    TDH-SSI-Hub/TNemailR
 Depends: 
-    R (>= 3.5)
+    R (>= 3.5),
+    TNgeocodeR,
+    TNbrandR,
+    TNemailR
+    
