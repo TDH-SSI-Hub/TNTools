@@ -96,13 +96,13 @@ tn_mvps_jwt<-function(){
 #' @param year Integer for year of data to pull
 #' @param from Integer for starting MMWR Week
 #' @param to Integer for ending MMWR Week
-#' @param eventCode Condition codes to pull (doesn't work currently)
-#' @param category Category of event codes to pull (doesn't work currently)
+#' @param eventCode Condition codes to pull
+#' @param category Category of event codes to pull
 #' @param classificationStatus Limit extract to these case statuses (from tn_mvps_case_class_codes())
 #' @param messageType Limit extract to these message types (from tn_mvps_message_types())
 #' @param reconciliationStatus Limit extract by reconciliation status
 #'
-#' @return Date or formatted string
+#' @return Dataframe
 #' @export
 tn_mvps_linelist<-function(year=2024,from=1,to=53,
                         eventCode=NULL,
@@ -131,3 +131,55 @@ tn_mvps_linelist<-function(year=2024,from=1,to=53,
   return(suppressWarnings(as.data.frame(data.table::rbindlist(httr2::resp_body_json(linelist_response)))))
 
 }
+
+
+
+#' Pull in linelist of errors from the MVPS API
+#'
+#' You must set the MVPS credentials on your machine using tn_mvps_credentials_set() prior to calling this function.
+#' For "complete" API documentation, see https://developer.cdc.gov/docs/mvps-external-api/documentation
+#'
+#' @param year Integer for year of data to pull
+#' @param from Integer for starting MMWR Week
+#' @param to Integer for ending MMWR Week
+#' @param eventCode Condition codes to pull
+#' @param category Category of event codes to pull
+#' @param warnings T/F Should warnings be included in the extract
+#' @param messageType Limit extract to these message types (from tn_mvps_message_types())
+#'
+#' @return Dataframe
+#' @export
+tn_mvps_errors<-function(year=2024,from=1,to=53,
+                           eventCode=NULL,
+                           category=NULL,
+                           warnings=T,
+                           messageType=NULL){
+
+
+  url <-"https://api.cdc.gov/mvps/1.0.0/api/Reports/ErrorAndWarning"
+
+  message('Pulling errors')
+  linelist_response<-httr2::request(url) |>
+    httr2::req_headers(Authorization=paste0('Bearer ',tn_mvps_jwt())) |>
+    httr2::req_body_json(data=list(mmwrYear=year,
+                                   mmwrWeekFrom=from,
+                                   mmwrWeekTo=to,
+                                   eventCode=eventCode,
+                                   excludeWarnings=!warnings,
+                                   category=category,
+                                   messageType=messageType
+                                   )) |>
+    httr2::req_perform()
+
+
+  return(suppressWarnings(as.data.frame(data.table::rbindlist(httr2::resp_body_json(linelist_response)))))
+
+}
+
+
+
+
+
+
+
+
