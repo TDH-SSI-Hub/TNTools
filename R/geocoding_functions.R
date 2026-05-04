@@ -3,6 +3,7 @@
 #' @export
 TNgeocodeR::tn_county_to_region
 
+
 #' @importFrom TNgeocodeR tn_geocode_vector
 #' @export
 TNgeocodeR::tn_geocode_vector
